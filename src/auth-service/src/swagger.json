@@ -1,0 +1,212 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Auth Service API",
+    "version": "1.0.0",
+    "description": "API documentation for the Auth Service"
+  },
+  "paths": {
+    "/api/doctors": {
+      "get": {
+        "summary": "Get all doctors",
+        "tags": ["Doctors"],
+        "responses": {
+          "200": {
+            "description": "List of doctors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "fullname": { "type": "string" },
+                      "speciality": { "type": "string" },
+                      "experience": { "type": "integer" },
+                      "consultationFee": {
+                        "type": "number",
+                        "format": "decimal"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/doctors/signup": {
+      "post": {
+        "summary": "Register a new doctor",
+        "tags": ["Doctors"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullname": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 6 },
+                  "role": { "type": "string", "enum": ["DOCTOR"] },
+                  "speciality": { "type": "string" },
+                  "experience": { "type": "integer" },
+                  "consultationFee": { "type": "number", "format": "decimal" }
+                },
+                "required": [
+                  "fullname",
+                  "email",
+                  "password",
+                  "role",
+                  "speciality",
+                  "experience",
+                  "consultationFee"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Doctor registered successfully" },
+          "400": { "description": "Validation error" },
+          "500": { "description": "Failed to register doctor" }
+        }
+      }
+    },
+    "/api/doctors/login": {
+      "post": {
+        "summary": "Doctor login",
+        "tags": ["Doctors"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/api/doctors/{id}": {
+      "get": {
+        "summary": "Get doctor by ID",
+        "tags": ["Doctors"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Doctor info" },
+          "404": { "description": "Doctor not found" },
+          "401": { "description": "No token provided" },
+          "403": { "description": "Invalid or expired token" }
+        }
+      }
+    },
+    "/api/patients": {
+      "get": {
+        "summary": "Get patient profile",
+        "tags": ["Patients"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "User profile" },
+          "404": { "description": "User not found" },
+          "401": { "description": "No token provided" },
+          "403": { "description": "Invalid or expired token" }
+        }
+      }
+    },
+    "/api/patients/signup": {
+      "post": {
+        "summary": "Register a new patient",
+        "tags": ["Patients"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullname": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 6 },
+                  "role": { "type": "string", "enum": ["PATIENT"] }
+                },
+                "required": ["fullname", "email", "password", "role"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created" },
+          "400": { "description": "Validation error" },
+          "409": { "description": "Email already exists" }
+        }
+      }
+    },
+    "/api/patients/login": {
+      "post": {
+        "summary": "Patient login",
+        "tags": ["Patients"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful" },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health check",
+        "tags": ["System"],
+        "responses": {
+          "200": { "description": "Service is healthy" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
