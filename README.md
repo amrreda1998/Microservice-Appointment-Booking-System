@@ -166,12 +166,12 @@ const notificationSchema = new mongoose.Schema({
    git clone <your-repository-url>
    cd microservice-appointment-booking-system
    ```
-2. Configure environment variables for each service (see `.env.example` files or service docs).
-3. Start all services via Docker Compose:
+2. Start all services via Docker Compose:
    ```bash
-   docker-compose up --build
+   docker-compose up -d
    ```
-4. Access API docs at `/api/docs` for each service
+3. Access all service through the api-gateway
+4. Access API docs at `/api/docs/{service-name}` for each service
 
 ---
 
